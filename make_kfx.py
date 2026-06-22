@@ -150,7 +150,15 @@ def main():
         type=int,
         default=25,
         help="Approx words per chunk when splitting (default 25 = 'short'; "
-        "~35 = 'medium'). Passed through to the splitter.",
+        "~35 = 'medium'; ~12 for a 4-inch e-reader). Passed through to the splitter.",
+    )
+    ap.add_argument(
+        "--min-split-words",
+        type=int,
+        default=70,
+        help="Only split English paragraphs longer than this (default 70). Lower "
+        "for small screens — e.g. ~20 for a 4-inch e-reader — so even moderately "
+        "long pairs get broken up to fit one screen. Passed through to the splitter.",
     )
     args = ap.parse_args()
 
@@ -170,7 +178,8 @@ def main():
     step("[1/2] Splitting long pairs and locking EN/ES pairs together ...")
     r = subprocess.run(
         [sys.executable, SPLITTER, epub, "--keep-mode", args.keep_mode,
-         "--target-words", str(args.target_words)]
+         "--target-words", str(args.target_words),
+         "--min-split-words", str(args.min_split_words)]
     )
     if r.returncode != 0:
         sys.exit("Splitter failed; aborting.")

@@ -697,7 +697,7 @@ def process_epub(epub_path, keep_mode):
 
 
 def main():
-    global TARGET_CHUNK_WORDS
+    global TARGET_CHUNK_WORDS, SPLIT_IF_WORDS_GT
     parser = argparse.ArgumentParser(
         description=(
             "Split long EN/ES paragraph pairs and keep each pair on one Kindle "
@@ -726,10 +726,22 @@ def main():
         type=int,
         default=TARGET_CHUNK_WORDS,
         help="Approx words per chunk when splitting long paragraphs "
-        "(default 25 = 'short'; ~35 = 'medium'). Larger = fewer, longer chunks.",
+        "(default 25 = 'short'; ~35 = 'medium'; ~12 for a 4-inch e-reader). "
+        "Larger = fewer, longer chunks.",
+    )
+    parser.add_argument(
+        "--min-split-words",
+        type=int,
+        default=SPLIT_IF_WORDS_GT,
+        help="Only split an English paragraph when it has MORE than this many "
+        "words (and at least 2 sentences on each side). Default 70. Lower it on "
+        "small screens — e.g. ~20 for a 4-inch e-reader — so even moderately "
+        "long pairs get broken up enough to fit one screen (otherwise the "
+        "keep-together rule can't hold a pair that's taller than the screen).",
     )
     args = parser.parse_args()
     TARGET_CHUNK_WORDS = args.target_words
+    SPLIT_IF_WORDS_GT = args.min_split_words
 
     target = args.target
     if os.path.isdir(target):
