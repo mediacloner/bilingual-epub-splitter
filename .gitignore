@@ -1,0 +1,8 @@
+# Books / build artifacts (do not commit copyrighted EPUBs)
+*.epub
+*.kfx
+*.kpf
+
+# Python
+__pycache__/
+*.pyc
